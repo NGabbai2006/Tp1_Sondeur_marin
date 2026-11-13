@@ -24,7 +24,7 @@ Tp1_Sondeur_marin::Tp1_Sondeur_marin(QWidget* parent)
 }
 
 Tp1_Sondeur_marin::~Tp1_Sondeur_marin()
-{
+{ 
 
 }
 
@@ -39,9 +39,18 @@ Tp1_Sondeur_marin::~Tp1_Sondeur_marin()
 //$SDDPT, , * 57
 //$SDDBT, , , , , , , * 45
 // arduino
+
+QString convert(QString nombre) {
+    QStringList nb = nombre.split(QRegularExpression("[.]"));
+    int nb1 = nb[0].toInt() / 100;
+    int nb2 = nb[0].toInt() % 100;
+    QString add = QString::number(nb1) += "°"+QString::number(nb2);
+    nombre = add + "." + nb[1];
+    return nombre;
+}
+
 void Tp1_Sondeur_marin::onSerialPortReadyRead()
 {
-    qDebug() << "test test";
     // evite les bugs de valeurs en lisant ligne par ligne et pas tout d'un coup
         QByteArray data = port->readLine();
         data = "$GPAPB, V, A, 0.00, L, N, V, V, 22.6, T, , 22.6, T, , * 4F\n$GPGLL, 4952.6634, N, 00218.1741, E, 001924, V * 36\n$GPRMB, V, 0.00, L, , , 7517.5754, N, 06122.0368, E, 999.99, 22.6, 0.0, V * 23\n$GPRMC, 001924, V, 4952.6634, N, 00218.1741, E, 0.0, 0.0, 010200, 2.0, W * 79\n$GPGGA, 001924, 4952.6634, N, 00218.1741, E, 0, 0, 50.00, -47, M, , , , * 2E\n$GPGSA, A, 1, , , , , , , , , , , , , 50.00, 50.00, 50.00 * 35\n$GPGSV, 1, 1, 3, , , 0, * 4B\n$SDMTW, 25.2, C * 01\n$SDDPT, , * 57\n$SDDBT, , , , , , , * 45";
@@ -49,50 +58,49 @@ void Tp1_Sondeur_marin::onSerialPortReadyRead()
 
         // retire les espaces et les retours à la ligne
         ligne = ligne.trimmed();
-        QStringList data2 = ligne.split(QRegularExpression("[,\n]")); // recup tout les valeurs dans une liste 
         ui.textEdit_donnees->insertPlainText(ligne + "\n");
-        int j=0;
-        QStringList analyst;
-        int x = 0;
-        int indice = 0;
-        int tab[10];
-        while (data2.size() > j) {
-            qDebug() << data2[j];
-            if (data2[j] == "$GPGLL" || data2[j] == "$SDMTW" || data2[j] == "$SDDPT") {
-                tab[indice]= x;
-                indice++;
-                while (j < data.size() && data2[j] != "$GPRMC" && data2[j] == "$SDDPT" && data2[j] != "$SDDBT") {
-                    analyst.append(data2[j]);
-                    j++;
-                    x++;
-                }
+        QStringList data2 = ligne.split(QRegularExpression("[$\n]")); // recup tout les valeurs dans une liste 
+        QStringList GPGLL, SDMTW,SDDPT,SDDBT;
+        ui.textEdit_donnesanalyse->insertPlainText("=========Nouvelle Trame info clé=========\n");
+        for (int i = 0; i < data2.size(); i++) {
+            if (data2[i].startsWith("GPGLL")) {
+                GPGLL = data2[i].split(QRegularExpression("[,]"));
+                afficheTrame(GPGLL);
             }
-            else if (data2[j] == "$SDDBT") {
-                while (j < data2.size()) {
-                    analyst.append(data2[j]);
-                    j++;
-                    x++;
-                }
+            else if (data2[i].startsWith("SDMTW")) {
+                SDMTW = data2[i].split(QRegularExpression("[,]"));
+                afficheTrame(SDMTW);
             }
-            else {
-            j++;
+            else if (data2[i].startsWith("SDDPT")){
+                SDDPT = data2[i].split(QRegularExpression("[,]"));
+                afficheTrame(SDDPT);
             }
-        }
-        for (int i = 0; i < analyst.size(); i++)
-        { 
-            if (i == 0) {
-                ui.textEdit_donnesanalyse->insertPlainText("=========Nouvelle Trame=========\n");
+            else if (data2[i].startsWith("SDDBT")) {
+                SDDBT = data2[i].split(QRegularExpression("[,]"));
+                afficheTrame(SDDBT);
             }
-            analyst[i] = analyst[i].trimmed();
-            ui.textEdit_donnesanalyse->insertPlainText("Champ "+QString::number(i + 1) + " :  " + analyst[i] + "\n");
+
         }
         
         ui.textEdit_info->insertPlainText("=======Info Trame======\n");
-        ui.textEdit_info->insertPlainText("temparture : "+analyst[tab[0] + 1]);
-        qDebug() << "ENVOYE :" << ligne;
+        if (SDDPT[1].isEmpty()) {
+            SDDPT[1] = "N/A";
+        }
+        if (SDDBT[3].isEmpty()) {
+            SDDBT[3] = "N/A";
+        }
+        ui.textEdit_info->insertPlainText("temparture : "+ SDMTW[1]+"°"+ GPGLL[2]+convert(GPGLL[1])+ " "+ GPGLL[4]+ convert(GPGLL[3])+ " Profondeur Sous sonde : "+ SDDBT[3]+"m" + " Profondeur totale : " + SDDPT[1]+"m");
+        
 }
 
-
+void Tp1_Sondeur_marin::afficheTrame(QStringList Trame) {
+    ui.textEdit_donnesanalyse->insertPlainText("=========nom d'indentification =========\n");
+    for (int i = 0; i < Trame.size(); i++)
+    {
+        Trame[i] = Trame[i].trimmed();
+        ui.textEdit_donnesanalyse->insertPlainText("Champ " + QString::number(i + 1) + " :  " + Trame[i] + "\n");
+    }
+}
 
 void Tp1_Sondeur_marin::onSendMessageButtonClicked()
 {

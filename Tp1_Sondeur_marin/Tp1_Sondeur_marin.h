@@ -13,6 +13,7 @@ class Tp1_Sondeur_marin : public QMainWindow
 public:
     Tp1_Sondeur_marin(QWidget* parent = nullptr);
     ~Tp1_Sondeur_marin();
+    void afficheTrame(QStringList Trame);
 
 public slots:
     //arduino
