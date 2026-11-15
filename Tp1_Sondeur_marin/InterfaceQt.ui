@@ -76,29 +76,6 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lineEdit_envoi">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>270</y>
-      <width>451</width>
-      <height>24</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButton_envoyer">
-    <property name="geometry">
-     <rect>
-      <x>490</x>
-      <y>270</y>
-      <width>91</width>
-      <height>24</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Envoyé</string>
-    </property>
-   </widget>
    <widget class="QTextEdit" name="textEdit_donnees">
     <property name="geometry">
      <rect>
@@ -184,7 +161,7 @@
      <x>0</x>
      <y>0</y>
      <width>1161</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>
@@ -219,26 +196,9 @@
     </hint>
    </hints>
   </connection>
-  <connection>
-   <sender>pushButton_envoyer</sender>
-   <signal>clicked()</signal>
-   <receiver>InterfaceQtClass</receiver>
-   <slot>onSendMessageButtonClicked()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>785</x>
-     <y>489</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>385</x>
-     <y>222</y>
-    </hint>
-   </hints>
-  </connection>
  </connections>
  <slots>
   <slot>onOpenPortButtonClicked()</slot>
-  <slot>onSendMessageButtonClicked()</slot>
   <slot>onSerialPortReadyRead()</slot>
  </slots>
 </ui>

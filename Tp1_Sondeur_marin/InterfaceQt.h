@@ -4,7 +4,8 @@
 #include "ui_InterfaceQt.h"
 #include <QSerialPort>
 #include <QSerialPortInfo>
-
+#include <QTimer>
+#include "Sondeur_marin.h"
 
 class InterfaceQt : public QMainWindow
 {
@@ -13,20 +14,21 @@ class InterfaceQt : public QMainWindow
 public:
     InterfaceQt(QWidget* parent = nullptr);
     ~InterfaceQt();
-    void afficheTrame(QStringList Trame);
+    void afficheTrame(QList<QStringList> trames);
+	void TrameAnalysePause();
 
 public slots:
     //arduino
     void onSerialPortReadyRead();
-    void onSendMessageButtonClicked();
     void onOpenPortButtonClicked();
-
 
 private:
     Ui::InterfaceQtClass ui;
     QSerialPort* port;
-    QTimer* timer;
-
+    Sondeur_marin sondeur;
+	QTimer*timer;
+	QString ligne;
+    bool firstTrame = true;
 };
 
 
