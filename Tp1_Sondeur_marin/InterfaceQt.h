@@ -1,18 +1,18 @@
 #pragma once
 #pragma warning (disable : 4996)
 #include <QtWidgets/QMainWindow>
-#include "ui_Tp1_Sondeur_marin.h"
+#include "ui_InterfaceQt.h"
 #include <QSerialPort>
 #include <QSerialPortInfo>
 
 
-class Tp1_Sondeur_marin : public QMainWindow
+class InterfaceQt : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    Tp1_Sondeur_marin(QWidget* parent = nullptr);
-    ~Tp1_Sondeur_marin();
+    InterfaceQt(QWidget* parent = nullptr);
+    ~InterfaceQt();
     void afficheTrame(QStringList Trame);
 
 public slots:
@@ -23,7 +23,7 @@ public slots:
 
 
 private:
-    Ui::Tp1_Sondeur_marinClass ui;
+    Ui::InterfaceQtClass ui;
     QSerialPort* port;
     QTimer* timer;
 

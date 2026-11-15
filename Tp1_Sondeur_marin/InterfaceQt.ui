@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Tp1_Sondeur_marinClass</class>
- <widget class="QMainWindow" name="Tp1_Sondeur_marinClass">
+ <class>InterfaceQtClass</class>
+ <widget class="QMainWindow" name="InterfaceQtClass">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Tp1_Sondeur_marin</string>
+   <string>InterfaceQt</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QLabel" name="labelServer">
@@ -200,13 +200,13 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="Tp1_Sondeur_marin.qrc"/>
+  <include location="InterfaceQt.qrc"/>
  </resources>
  <connections>
   <connection>
    <sender>pushButton_port</sender>
    <signal>clicked()</signal>
-   <receiver>Tp1_Sondeur_marinClass</receiver>
+   <receiver>InterfaceQtClass</receiver>
    <slot>onOpenPortButtonClicked()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -222,7 +222,7 @@
   <connection>
    <sender>pushButton_envoyer</sender>
    <signal>clicked()</signal>
-   <receiver>Tp1_Sondeur_marinClass</receiver>
+   <receiver>InterfaceQtClass</receiver>
    <slot>onSendMessageButtonClicked()</slot>
    <hints>
     <hint type="sourcelabel">

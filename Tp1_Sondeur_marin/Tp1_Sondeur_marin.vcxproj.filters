@@ -23,13 +23,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <QtRcc Include="Tp1_Sondeur_marin.qrc">
+    <QtRcc Include="InterfaceQt.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <QtUic Include="Tp1_Sondeur_marin.ui">
+    <QtUic Include="InterfaceQt.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <ClCompile Include="Tp1_Sondeur_marin.cpp">
+    <ClCompile Include="InterfaceQt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -37,10 +37,18 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Sondeur_marin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="Tp1_Sondeur_marin.h">
+    <QtMoc Include="InterfaceQt.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Sondeur_marin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

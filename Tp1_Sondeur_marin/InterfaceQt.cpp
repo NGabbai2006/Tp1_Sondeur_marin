@@ -1,11 +1,11 @@
-#include "Tp1_Sondeur_marin.h"
+#include "InterfaceQt.h"
 #include <QDesktopServices>
 #include <QDir>
 #include <QCoreApplication>
 #include "qtimer.h"
 #include <QRegularExpression>
 
-Tp1_Sondeur_marin::Tp1_Sondeur_marin(QWidget* parent)
+InterfaceQt::InterfaceQt(QWidget* parent)
     : QMainWindow(parent)
 {
     ui.setupUi(this);
@@ -23,7 +23,7 @@ Tp1_Sondeur_marin::Tp1_Sondeur_marin(QWidget* parent)
 
 }
 
-Tp1_Sondeur_marin::~Tp1_Sondeur_marin()
+InterfaceQt::~InterfaceQt()
 { 
 
 }
@@ -49,7 +49,7 @@ QString convert(QString nombre) {
     return nombre;
 }
 
-void Tp1_Sondeur_marin::onSerialPortReadyRead()
+void InterfaceQt::onSerialPortReadyRead()
 {
     // evite les bugs de valeurs en lisant ligne par ligne et pas tout d'un coup
         QByteArray data = port->readLine();
@@ -93,7 +93,7 @@ void Tp1_Sondeur_marin::onSerialPortReadyRead()
         
 }
 
-void Tp1_Sondeur_marin::afficheTrame(QStringList Trame) {
+void InterfaceQt::afficheTrame(QStringList Trame) {
     ui.textEdit_donnesanalyse->insertPlainText("=========nom d'indentification =========\n");
     for (int i = 0; i < Trame.size(); i++)
     {
@@ -102,7 +102,7 @@ void Tp1_Sondeur_marin::afficheTrame(QStringList Trame) {
     }
 }
 
-void Tp1_Sondeur_marin::onSendMessageButtonClicked()
+void InterfaceQt::onSendMessageButtonClicked()
 {
     if (port->isOpen())
     {
@@ -114,13 +114,13 @@ void Tp1_Sondeur_marin::onSendMessageButtonClicked()
    
 }
 
-void Tp1_Sondeur_marin::onOpenPortButtonClicked()
+void InterfaceQt::onOpenPortButtonClicked()
 {
     
     if (ui.comboBox_port->currentIndex() >= 0)
     {
         port = new QSerialPort(ui.comboBox_port->currentText());
-        QObject::connect(port, &QSerialPort::readyRead, this, &Tp1_Sondeur_marin::onSerialPortReadyRead);
+        QObject::connect(port, &QSerialPort::readyRead, this, &InterfaceQt::onSerialPortReadyRead);
         port->setBaudRate(9600);
         port->setDataBits(QSerialPort::DataBits::Data8);
         port->setParity(QSerialPort::Parity::NoParity);
