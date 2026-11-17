@@ -2,8 +2,6 @@
 #pragma warning (disable : 4996)
 #include <QtWidgets/QMainWindow>
 #include "ui_InterfaceQt.h"
-#include <QSerialPort>
-#include <QSerialPortInfo>
 #include <QTimer>
 #include "Sondeur_marin.h"
 
@@ -24,7 +22,6 @@ public slots:
 
 private:
     Ui::InterfaceQtClass ui;
-    QSerialPort* port;
     Sondeur_marin sondeur;
 	QTimer*timer;
 	QString ligne;

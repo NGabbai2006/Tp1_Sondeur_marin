@@ -1,10 +1,19 @@
 #include "Sondeur_marin.h"
 
 Sondeur_marin::Sondeur_marin() {
+
+    availablePorts = QSerialPortInfo::availablePorts();
+    
 }
 Sondeur_marin::~Sondeur_marin() {
 }
 
+// permet de recuperer la liste de tout les ports trouver. 
+QList<QSerialPortInfo> Sondeur_marin::GetPort() {
+    return availablePorts;
+}
+
+// permet de convertir la longitude et la latitude
 QString Sondeur_marin::convert(QString nombre) {
     QStringList nb = nombre.split(QRegularExpression("[.]"));
     int nb1 = nb[0].toInt() / 100;
@@ -14,6 +23,8 @@ QString Sondeur_marin::convert(QString nombre) {
     return nombre;
 }
 
+
+// coupe la trame en plusieurs bout 
 void Sondeur_marin::analyseTrame(QString ligne) {
     QStringList data2 = ligne.split(QRegularExpression("[$\n]")); // recup tout les valeurs dans une liste 
     
@@ -34,6 +45,7 @@ void Sondeur_marin::analyseTrame(QString ligne) {
     }
 }
 
+// permet de recuper les parties de la trame qui nous interesse dans une liste 
 QList<QStringList> Sondeur_marin::getTrame() {
 	QList<QStringList> trames;
 	trames.append(GPGLL);

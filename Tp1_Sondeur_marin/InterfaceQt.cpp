@@ -8,12 +8,9 @@ InterfaceQt::InterfaceQt(QWidget* parent)
     : QMainWindow(parent),sondeur()
 {
     ui.setupUi(this);
-    QList<QSerialPortInfo> availablePorts = QSerialPortInfo::availablePorts();
-
-    for (int i = 0; i < availablePorts.size(); ++i) {
-        QSerialPortInfo info = availablePorts[i];
-        ui.comboBox_port->addItem(info.portName(), QVariant(info.portName()));
-
+    QList<QSerialPortInfo> info = sondeur.GetPort();
+    for (int i = 0; i < info.size();i++) {
+        ui.comboBox_port->addItem(info[i].portName(), QVariant(info[i].portName()));
     }
 	timer = new QTimer(this);
 	connect(timer, &QTimer::timeout, this, &InterfaceQt::TrameAnalysePause);
@@ -90,13 +87,14 @@ void InterfaceQt::onOpenPortButtonClicked()
 {
     if (ui.comboBox_port->currentIndex() >= 0)
     {
+        ui.comboBox_port->
         port = new QSerialPort(ui.comboBox_port->currentText());
         QObject::connect(port, &QSerialPort::readyRead, this, &InterfaceQt::onSerialPortReadyRead);
         port->setBaudRate(9600);
         port->setDataBits(QSerialPort::DataBits::Data8);
         port->setParity(QSerialPort::Parity::NoParity);
         port->setStopBits(QSerialPort::StopBits::OneStop);
-       
+
         if (port->open(QIODevice::ReadWrite))
         {
             ui.label_status->setText("Status port : Ouvert");
