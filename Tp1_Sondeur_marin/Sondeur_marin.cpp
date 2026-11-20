@@ -28,7 +28,7 @@ QString Sondeur_marin::convert(QString nombre) {
     QStringList nb = nombre.split(QRegularExpression("[.]"));
     int nb1 = nb[0].toInt() / 100;
     int nb2 = nb[0].toInt() % 100;
-    QString add = QString::number(nb1) += "°" + QString::number(nb2);
+    QString add = QString::number(nb1) + "°" + QString::number(nb2);
     nombre = add + "." + nb[1];
     return nombre;
 }
@@ -80,14 +80,11 @@ void Sondeur_marin::StopAcquisition() {
 
 void Sondeur_marin::onSerialPortReadyRead() {
 	newTrame += port->readAll(); // permet de recuperer la trame petit a petit
-    qDebug() << QString::fromUtf8(newTrame);
     while (newTrame.contains('\n')) {
         int i = newTrame.indexOf('\n'); // recup la premiere occurence du \n
 		tramebrut = QString::fromUtf8(newTrame.left(i)); // recupere la trame jusqu'au retour a la ligne pour l'afficher apres
 		ligne = QString::fromUtf8(newTrame.left(i)); // trame a analyser
-		qDebug() << "Trame reçue : " << ligne;
 		newTrame.remove(0, i + 1); // supprime la trame deja recupere car plus besoin
-		qDebug() << "Trame restante : " << QString::fromUtf8(newTrame);
 		analyseTrame(); // Appel pour analyser la trame
     }
 }
@@ -95,17 +92,15 @@ void Sondeur_marin::onSerialPortReadyRead() {
 // coupe la trame en plusieurs bout 
 void Sondeur_marin::analyseTrame() {
 	QString ligneverifie = ligne.trimmed(); // permet de manipuler la trame et de la verifier
-    ligne.clear();
-    qDebug() << "ligne vidé :" << ligne ;
-	qDebug() << "ligne verifié :" << ligneverifie;
     if (ligneverifie.isEmpty()) {
 		return; // permet de passser a la trame suivante si par malchance la trame est mal decouper avec seulement un espace vide
+    }
+    if (!ligneverifie.contains('$')) {
+        return;
     }
     ligneverifie = ligneverifie.section('*', 0, 1).trimmed(); // recup tout la trame verifié
     ligneverifie.replace("$", ""); // supprime le $
     QStringList data = ligneverifie.split(QRegularExpression("[,]")); // coupe la trame en plusieurs bout
-    qDebug() << "old Trame : " << ligneverifie;
-	qDebug() << "Trame analysée : " << data;
     if (data[0].startsWith("GPGLL")) {
         GPGLL.append(data);
     }
@@ -130,13 +125,13 @@ QList<QStringList> Sondeur_marin::getTrame() {
     QStringList tempo;
     int i = 0;
     int indice = GPGLL.size();
-	qDebug() << "Trames temporaires : " << trames;
     trames.append(GPGLL);
     trames.append(SDMTW);
     trames.append(SDDPT);
     trames.append(SDDBT);
-    supprime();
-    qDebug() << "Trames finales : " << trames;
+    if (!GPGLL.isEmpty() && !SDMTW.isEmpty() && !SDDPT.isEmpty() && !SDDBT.isEmpty()) {
+        supprime();
+    }
     return trames;
 // ============== probleme d'index dedans est possiblement inutile au final =======================
 /*

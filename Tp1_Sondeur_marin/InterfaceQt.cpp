@@ -36,23 +36,20 @@ void InterfaceQt::afficheTrame(QList<QStringList> trames) { // On s'assure que l
             continue; 
         }
         if (trames[i][0] == "GPGLL") {
-			qDebug() << "Trame GPGLL : " << trames[i];
             GPGLL = trames[i];
         }
         else if (trames[i][0] == "SDMTW") {
-			qDebug() << "Trame SDMTW : " << trames[i];
             SDMTW = trames[i];
         }
         else if (trames[i][0] == "SDDPT") {
-			qDebug() << "Trame SDDPT : " << trames[i];
             SDDPT = trames[i];
         }
         else if (trames[i][0] == "SDDBT") {
-			qDebug() << "Trame SDDBT : " << trames[i];
             SDDBT = trames[i];
         }
     }
 	if (!GPGLL.isEmpty() && !SDMTW.isEmpty() && !SDDPT.isEmpty() && !SDDBT.isEmpty()) { // Si il manque une partie de la tramme je n'affiche pas les informations interressante / j'attends
+        qDebug() << GPGLL;
         ui.textEdit_info->insertPlainText("=======Info Trame======\n");
         if (SDDPT[1].isEmpty() || SDDPT[1] == " ") {
             SDDPT[1] = "N/A";
@@ -60,10 +57,9 @@ void InterfaceQt::afficheTrame(QList<QStringList> trames) { // On s'assure que l
         if (SDDBT[3].isEmpty() || SDDBT[3] == " ") {
             SDDBT[3] = "N/A";
         }
-        ui.textEdit_info->insertPlainText("temparture : " + SDMTW[1] + "°" + GPGLL[2] + sondeur.convert(GPGLL[1]) + " " + GPGLL[4] + sondeur.convert(GPGLL[3]) + " Profondeur Sous sonde : " + SDDBT[3] + " m" + " Profondeur totale : " + SDDPT[1] + " m\n");
+       ui.textEdit_info->insertPlainText("temparture : " + SDMTW[1] + "°C " + GPGLL[2] + sondeur.convert(GPGLL[1]) + "  " + GPGLL[4] + sondeur.convert(GPGLL[3]) + " Profondeur Sous sonde : " + SDDBT[3] + " m" + " Profondeur totale : " + (SDDPT[1]+ SDDPT[2]) + " m\n");
 	}
 }
-
 
 void InterfaceQt::onOpenPortButtonClicked() { // Permet d'appeler la methode pour ouvrir le port
 		QString portName = ui.comboBox_port->currentText();
@@ -88,7 +84,6 @@ void InterfaceQt::OnAquisitionFini() {
 }
 
 void InterfaceQt::onButtonAquisitionClicked() { // Bouton qui lance l'acquisition 
-	qDebug() << "Bouton Acquisition cliqué";
 	sondeur.lancerAcquisition(); // Appele la methode lancer aquisition qui lance tout le programme et le timer
     // Vide tout a chaque fois
 	ui.textEdit_donnees->clear();
