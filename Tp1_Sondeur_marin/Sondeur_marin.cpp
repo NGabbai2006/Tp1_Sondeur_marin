@@ -38,7 +38,7 @@ QList<QSerialPortInfo> Sondeur_marin::GetPort() {
     return availablePorts;
 }
 
-bool Sondeur_marin::LancerPort(QString portName) {
+bool Sondeur_marin::LancerPort(QString portName) { //regarde tout les ports disponibles/actifs
     if (port != nullptr) {
         port->close();
         delete port;
@@ -46,7 +46,7 @@ bool Sondeur_marin::LancerPort(QString portName) {
     port = new QSerialPort();
     port->setPortName(portName);
 	QObject::connect(port, &QSerialPort::readyRead, this, &Sondeur_marin::onSerialPortReadyRead);
-	port->setBaudRate(9600);
+	port->setBaudRate(4800);
 	port->setDataBits(QSerialPort::DataBits::Data8);
 	port->setParity(QSerialPort::Parity::NoParity);
 	port->setStopBits(QSerialPort::StopBits::OneStop);
@@ -101,14 +101,6 @@ void Sondeur_marin::analyseTrame() {
     if (ligneverifie.isEmpty()) {
 		return; // permet de passser a la trame suivante si par malchance la trame est mal decouper avec seulement un espace vide
     }
-    bool ok;
-    int checksum = ligneverifie.section('*', 1, 1).toInt(&ok, 16); // récupère la valeur de checksum et verif et le met en hexa
-    QString calcule = ligneverifie.split("*")[0].trimmed(); // permet de recup tout avant le *
-    calcule.replace("$", ""); // supprime le $ 
-    if (!ok) { // faire /remplacer par le calcul du checksum 
-        // La trame est invalide
-        return;
-    }
     ligneverifie = ligneverifie.section('*', 0, 1).trimmed(); // recup tout la trame verifié
     ligneverifie.replace("$", ""); // supprime le $
     QStringList data = ligneverifie.split(QRegularExpression("[,]")); // coupe la trame en plusieurs bout
@@ -139,7 +131,15 @@ QList<QStringList> Sondeur_marin::getTrame() {
     int i = 0;
     int indice = GPGLL.size();
 	qDebug() << "Trames temporaires : " << trames;
-
+    trames.append(GPGLL);
+    trames.append(SDMTW);
+    trames.append(SDDPT);
+    trames.append(SDDBT);
+    supprime();
+    qDebug() << "Trames finales : " << trames;
+    return trames;
+// ============== probleme d'index dedans est possiblement inutile au final =======================
+/*
 	while (indice + 1 < SDMTW.size() || indice + 1 < SDDPT.size() || indice + 1 < SDDBT.size()) { // permet de verifier que tous les trames soit recu
         tempo.append({ "GPGLL", "N/A", "N/A", "N/A", "N/A" });
         GPGLL.append(tempo);
@@ -167,6 +167,7 @@ QList<QStringList> Sondeur_marin::getTrame() {
         tempo.clear();
         indice++;
     }
+
     if (!GPGLL.isEmpty()) {
         trames.append(GPGLL[0]);
     }
@@ -182,6 +183,5 @@ QList<QStringList> Sondeur_marin::getTrame() {
 	if (!GPGLL.isEmpty() && !SDMTW.isEmpty() && !SDDPT.isEmpty() && !SDDBT.isEmpty()) {
         supprime();
 	}
-    qDebug() << "Trames finales : " << trames;
-    return trames;
+*/
 }

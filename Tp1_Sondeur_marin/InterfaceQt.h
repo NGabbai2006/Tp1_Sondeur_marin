@@ -16,7 +16,6 @@ public:
 	void OnAquisitionFini();
 
 public slots:
-    //arduino
     void onOpenPortButtonClicked();
 	void onButtonAquisitionClicked();
 
