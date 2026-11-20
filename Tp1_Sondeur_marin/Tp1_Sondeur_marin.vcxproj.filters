@@ -45,10 +45,8 @@
     <QtMoc Include="InterfaceQt.h">
       <Filter>Header Files</Filter>
     </QtMoc>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Sondeur_marin.h">
+    <QtMoc Include="Sondeur_marin.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
+    </QtMoc>
   </ItemGroup>
 </Project>

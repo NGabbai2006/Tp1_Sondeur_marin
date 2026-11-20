@@ -144,14 +144,27 @@
    <widget class="QTextEdit" name="textEdit_info">
     <property name="geometry">
      <rect>
-      <x>620</x>
+      <x>430</x>
       <y>270</y>
-      <width>491</width>
+      <width>681</width>
       <height>131</height>
      </rect>
     </property>
     <property name="readOnly">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonAquisition">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>260</y>
+      <width>191</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Lancer l'aquisition</string>
     </property>
    </widget>
   </widget>
@@ -196,9 +209,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButtonAquisition</sender>
+   <signal>clicked()</signal>
+   <receiver>InterfaceQtClass</receiver>
+   <slot>onButtonAquisitionClicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>105</x>
+     <y>307</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>580</x>
+     <y>271</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onOpenPortButtonClicked()</slot>
-  <slot>onSerialPortReadyRead()</slot>
+  <slot>onButtonAquisitionClicked()</slot>
  </slots>
 </ui>
