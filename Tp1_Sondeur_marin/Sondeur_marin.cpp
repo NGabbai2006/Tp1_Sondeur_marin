@@ -32,12 +32,12 @@ Sondeur_marin::Sondeur_marin(QObject* parent) : QObject(parent), port(nullptr) {
 //* Valeur de retour : aucun
 //---------------------------------------------------------------------------------------------
 Sondeur_marin::~Sondeur_marin() {
+    QObject::disconnect(timer, &QTimer::timeout, this, &Sondeur_marin::StopAcquisition);
+    QObject::disconnect(port, &QSerialPort::readyRead, this, &Sondeur_marin::onSerialPortReadyRead);
     if (port != nullptr) {
         port->close();
         delete port;
     }
-    QObject::disconnect(timer, &QTimer::timeout, this, &Sondeur_marin::StopAcquisition);
-    QObject::disconnect(port, &QSerialPort::readyRead, this, &Sondeur_marin::onSerialPortReadyRead);
 }
 
 //---------------------------------------------------------------------------------------------

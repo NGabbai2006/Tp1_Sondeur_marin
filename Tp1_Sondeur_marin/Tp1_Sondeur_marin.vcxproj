@@ -93,7 +93,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Sondeur_marin.cpp" />
-    <ClCompile Include="README.md" />
     <QtRcc Include="InterfaceQt.qrc" />
     <QtUic Include="InterfaceQt.ui" />
     <QtMoc Include="InterfaceQt.h" />
