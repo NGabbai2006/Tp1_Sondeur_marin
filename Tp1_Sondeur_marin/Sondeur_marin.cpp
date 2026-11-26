@@ -32,12 +32,12 @@ Sondeur_marin::Sondeur_marin(QObject* parent) : QObject(parent), port(nullptr) {
 //* Valeur de retour : aucun
 //---------------------------------------------------------------------------------------------
 Sondeur_marin::~Sondeur_marin() {
-    QObject::disconnect(timer, &QTimer::timeout, this, &Sondeur_marin::StopAcquisition);
-    QObject::disconnect(port, &QSerialPort::readyRead, this, &Sondeur_marin::onSerialPortReadyRead);
     if (port != nullptr) {
         port->close();
         delete port;
     }
+    QObject::disconnect(timer, &QTimer::timeout, this, &Sondeur_marin::StopAcquisition);
+    QObject::disconnect(port, &QSerialPort::readyRead, this, &Sondeur_marin::onSerialPortReadyRead);
 }
 
 //---------------------------------------------------------------------------------------------
@@ -62,10 +62,17 @@ void Sondeur_marin::supprime() {
 //* Valeur de retour : QString : valeur convertie
 //---------------------------------------------------------------------------------------------
 QString Sondeur_marin::convert(QString nombre) {
-    QStringList nb = nombre.split(QRegularExpression("[.]"));
+    QStringList nb = nombre.split(".");
+	if (nb.size() != 2) {
+		return nombre;  // si le format n'est pas bon je touche a rien 
+	}
     int nb1 = nb[0].toInt() / 100;
     int nb2 = nb[0].toInt() % 100;
-    QString add = QString::number(nb1) + "°" + QString::number(nb2);
+    QString add = QString::number(nb1) + "°";
+    if (nb2 <10) {
+		add += "0"; // permet d'ajouter un 0 pour eviter d'avoir des valeurs comme 1.5° au lieu de 1.05°
+    }
+    add += QString::number(nb2);
     nombre = add + "." + nb[1];
     return nombre;
 }
@@ -175,9 +182,10 @@ void Sondeur_marin::analyseTrame() {
     if (!ligneverifie.contains('$')) {
         return;
     }
+	ligneverifie = ligneverifie.split('$').at(1); // recup la trame apres le $ comme ca si y a des parasites ou autre je les gardes pas 
     ligneverifie = ligneverifie.section('*', 0, 1).trimmed(); // recup tout la trame verifié
     ligneverifie.replace("$", ""); // supprime le $
-    QStringList data = ligneverifie.split(QRegularExpression("[,]")); // coupe la trame en plusieurs bout
+    QStringList data = ligneverifie.split(","); // coupe la trame en plusieurs bout
     if (data[0].startsWith("GPGLL")) {
         GPGLL.append(data);
     }
@@ -220,8 +228,17 @@ QList<QStringList> Sondeur_marin::getTrame() {
     trames.append(SDMTW);
     trames.append(SDDPT);
     trames.append(SDDBT);
-    if (!GPGLL.isEmpty() && !SDMTW.isEmpty() && !SDDPT.isEmpty() && !SDDBT.isEmpty()) {
-        supprime();
+    if (!GPGLL.isEmpty()) {
+		GPGLL.clear();
+    }
+    if (!SDMTW.isEmpty() ){
+		SDMTW.clear();
+    } 
+    if (!SDDPT.isEmpty()) {
+		SDDPT.clear();
+    } 
+    if (!SDDBT.isEmpty()) {
+		SDDBT.clear();
     }
     return trames;
 // ============== probleme d'index dedans est possiblement inutile au final =======================

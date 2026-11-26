@@ -55,39 +55,72 @@ void InterfaceQt::afficheTrame(QList<QStringList> trames) { // On s'assure que l
     }
     for (int i = 0; i < trames.size(); i++) { // Affiche la trame traitée
         const QStringList trame = trames[i];
+		if (trame.isEmpty()) {
+			continue;
+		}
         ui.textEdit_donnesanalyse->insertPlainText("=========nom d'indentification =========\n");
         for (int j = 0; j < trame.size(); j++) {
-            ui.textEdit_donnesanalyse->insertPlainText("Champ " + QString::number(j + 1) + " :  " + trame[j].trimmed() + "\n");
+			if (trame[j].isEmpty()) {
+                ui.textEdit_donnesanalyse->insertPlainText("Champ " + QString::number(j + 1) + " :  (vide)\n");
+			}
+			else {
+				ui.textEdit_donnesanalyse->insertPlainText("Champ " + QString::number(j + 1) + " :  " + trame[j].trimmed() + "\n");
+			}
         }
     }
     QStringList GPGLL, SDMTW, SDDPT, SDDBT;
+	int s_GLL = 0;
+	int s_MTW = 0;
+	int s_DPT = 0;
+	int s_DBT = 0;
+
     for (int i = 0; i < trames.size(); i++) { // Recupère les trames dans variables qui correspondent
         if (trames[i].isEmpty()){ 
             continue; 
         }
         if (trames[i][0] == "GPGLL") {
             GPGLL = trames[i];
+            s_GLL = trames[i].size();
         }
         else if (trames[i][0] == "SDMTW") {
             SDMTW = trames[i];
+            s_MTW = trames[i].size();
         }
         else if (trames[i][0] == "SDDPT") {
             SDDPT = trames[i];
+			s_DPT = trames[i].size();
         }
         else if (trames[i][0] == "SDDBT") {
             SDDBT = trames[i];
+			s_DBT = trames[i].size();
         }
     }
-	if (!GPGLL.isEmpty() && !SDMTW.isEmpty() && !SDDPT.isEmpty() && !SDDBT.isEmpty()) { // Si il manque une partie de la tramme je n'affiche pas les informations interressante / j'attends
-        qDebug() << GPGLL;
-        ui.textEdit_info->insertPlainText("=======Info Trame======\n");
-        if (SDDPT[1].isEmpty() || SDDPT[1] == " ") {
-            SDDPT[1] = "N/A";
-        }
-        if (SDDBT[3].isEmpty() || SDDBT[3] == " ") {
-            SDDBT[3] = "N/A";
-        }
-       ui.textEdit_info->insertPlainText("temparture : " + SDMTW[1] + "°C " + GPGLL[2] + sondeur.convert(GPGLL[1]) + "  " + GPGLL[4] + sondeur.convert(GPGLL[3]) + " Profondeur Sous sonde : " + SDDBT[3] + " m" + " Profondeur totale : " + (SDDPT[1]+ SDDPT[2]) + " m\n");
+    if (s_GLL >= 5) {
+		if (!GPGLL[3].isEmpty() && !GPGLL[4].isEmpty()) {
+			ui.label_longitude->setText("Longitude : " + sondeur.convert(GPGLL[3]) + " " + GPGLL[4]);
+		}
+    }
+	if (s_GLL >= 3) {
+		if (!GPGLL[1].isEmpty() && !GPGLL[2].isEmpty()) {
+            ui.label_latitude->setText("Latitude : " + sondeur.convert(GPGLL[1]) + " " + GPGLL[2]);
+		}
+	}
+	if (s_MTW >= 2) {
+		if (!SDMTW[1].isEmpty()) {
+			ui.label_temp->setText("Température : " + SDMTW[1] + "°C");
+		}
+	}
+	if (s_DBT >= 4) {
+		if (!SDDBT[3].isEmpty()) {
+			ui.label_sous_cpt->setText("Profondeur sous sonde : " + SDDBT[3] + " m");
+		}
+	}
+	if (s_DPT >= 3) {
+		if (!SDDPT[1].isEmpty() && !SDDPT[2].isEmpty()) {
+			float nb = SDDPT[1].toFloat() + SDDPT[2].toFloat();
+			QString totalDepth = QString::number(nb);
+			ui.label_profon_total->setText("Profondeur totale : " + totalDepth + " m");
+		}
 	}
 }
 
@@ -147,5 +180,9 @@ void InterfaceQt::onButtonAquisitionClicked() { // Bouton qui lance l'acquisitio
     // Vide tout a chaque fois
 	ui.textEdit_donnees->clear();
 	ui.textEdit_donnesanalyse->clear();
-	ui.textEdit_info->clear();
+	ui.label_latitude->clear();
+	ui.label_longitude->clear();
+	ui.label_temp->clear();
+	ui.label_sous_cpt->clear();
+	ui.label_profon_total->clear();
 }
