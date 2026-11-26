@@ -1,3 +1,13 @@
+//*********************************************************************************************
+//* Programme : InterfaceQt.h                                                 Date : 20/09/2026
+//*--------------------------------------------------------------------------------------------
+//* Dernière mise à jour : 26/11/2026
+//*
+//* Programmeurs : Noah Gabbai                                            Classe : CIEL2
+//*--------------------------------------------------------------------------------------------
+//* But : Afficher les trames recu du sondeur marin et les analyser pour afficher les informations interressante
+//* Programmes associés : sondeur_marin.h,InterfaceQt.h
+//*********************************************************************************************
 #pragma once
 #pragma warning (disable : 4996)
 #include <QtWidgets/QMainWindow>

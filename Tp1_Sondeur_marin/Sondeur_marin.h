@@ -1,3 +1,13 @@
+//*********************************************************************************************
+//* Programme : Sondeur_marin.h                                                 Date : 20/09/2026
+//*--------------------------------------------------------------------------------------------
+//* Dernière mise à jour : 26/11/2026
+//*
+//* Programmeurs : Noah Gabbai                                            Classe : CIEL2
+//*--------------------------------------------------------------------------------------------
+//* But : contient les fonctions et variables pour la communication avec le sondeur marin et l'analyse des trames
+//* Programmes associés : sondeur_marin.cpp
+//*********************************************************************************************
 #pragma once
 #include <QRegularExpression>
 #include <QSerialPort>

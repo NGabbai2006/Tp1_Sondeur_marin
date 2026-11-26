@@ -1,6 +1,22 @@
+//*********************************************************************************************
+//* Programme : InterfaceQt.cpp                                                 Date : 20/09/2026
+//*--------------------------------------------------------------------------------------------
+//* Dernière mise à jour : 26/11/2026
+//*
+//* Programmeurs : Noah Gabbai                                            Classe : CIEL2
+//*--------------------------------------------------------------------------------------------
+//* But : Afficher les trames recu du sondeur marin et les analyser pour afficher les informations interressante
+//* Programmes associés : sondeur_marin.h,InterfaceQt.h
+//*********************************************************************************************
 #include "InterfaceQt.h"
-#include "Sondeur_marin.h"
 
+//---------------------------------------------------------------------------------------------
+//* Constructeur : InterfaceQt, permet d'initialiser les variables et de connecter les signaux et slots
+//* Paramètres :
+//*  - QWidget* parent : pointeur vers le widget parent
+//*
+//* Valeur de retour : aucune
+//---------------------------------------------------------------------------------------------
 InterfaceQt::InterfaceQt(QWidget* parent)
     : QMainWindow(parent),sondeur()
 {
@@ -13,12 +29,26 @@ InterfaceQt::InterfaceQt(QWidget* parent)
     QObject::connect(&sondeur, &Sondeur_marin::aquisitionFini, this, &InterfaceQt::OnAquisitionFini);
 }
 
+//---------------------------------------------------------------------------------------------
+//* Destructeur : InterfaceQt, permet de liberer la memoire et de deconnecter les signaux et slots
+//* Paramètres :
+//*  - aucun
+//*
+//* Valeur de retour : aucune
+//---------------------------------------------------------------------------------------------
 InterfaceQt::~InterfaceQt()
 { 
 	QObject::disconnect(&sondeur, &Sondeur_marin::readyRead, this, &InterfaceQt::OnAquisition);
 	QObject::disconnect(&sondeur, &Sondeur_marin::aquisitionFini, this, &InterfaceQt::OnAquisitionFini);
 }
 
+//---------------------------------------------------------------------------------------------
+//* Fonction afficheTrame, permet d'afficher les trames recu du sondeur marin et les analyser pour afficher les informations interressante
+//* Paramètres :
+//*  - QList<QStringList> trames : liste des trames recu du sondeur marin
+//*
+//* Valeur de retour : aucune
+//---------------------------------------------------------------------------------------------
 void InterfaceQt::afficheTrame(QList<QStringList> trames) { // On s'assure que la trame contienne des infos
     if (trames.isEmpty()) {
         return;
@@ -61,6 +91,13 @@ void InterfaceQt::afficheTrame(QList<QStringList> trames) { // On s'assure que l
 	}
 }
 
+//---------------------------------------------------------------------------------------------
+//* Fonction qui permet d'appeler la methode pour ouvrir le port en renvoyant le nom du port selectionner par l'utilisateur et d'afficher si le port est ouvert ou non
+//* Paramètres :
+//*  - aucun
+//*
+//* Valeur de retour : aucune
+//---------------------------------------------------------------------------------------------
 void InterfaceQt::onOpenPortButtonClicked() { // Permet d'appeler la methode pour ouvrir le port
 		QString portName = ui.comboBox_port->currentText();
 		if (portName.isEmpty()) {
@@ -74,15 +111,37 @@ void InterfaceQt::onOpenPortButtonClicked() { // Permet d'appeler la methode pou
 		}
 }
 
+//---------------------------------------------------------------------------------------------
+//* Fonction qui permet d'afficher les trames recu du sondeur marin et les analyser pour afficher les informations interressante lorsqu'il recoit le signal analyseTrame()
+//* Paramètres :
+//*  - aucun
+//*
+//* Valeur de retour : aucune
+//---------------------------------------------------------------------------------------------
 void InterfaceQt::OnAquisition() {
     QList<QStringList> trames = sondeur.getTrame(); // Recupère la trame
     ui.textEdit_donnees->insertPlainText(sondeur.getTrameBrut() + "\n"); // Affiche la trame recue avant traitement
     afficheTrame(trames); 
 }
+
+//---------------------------------------------------------------------------------------------
+//* Fonction qui stoppe l'acquisition lorsqu'il recoit le signal aquisitionFini()
+//* Paramètres :
+//*  - 
+//*
+//* Valeur de retour : 
+//---------------------------------------------------------------------------------------------
 void InterfaceQt::OnAquisitionFini() {
 	ui.textEdit_donnees->insertPlainText("=================Acquisition terminée.=================\n");
 }
 
+//---------------------------------------------------------------------------------------------
+//* Fonction qui lance l'acquisition lorsqu'on clique sur le bouton "Lancer Acquisition" et vide les textEdit pour ne pas garder les anciennes valeurs
+//* Paramètres :
+//*  - aucun
+//*
+//* Valeur de retour : aucune
+//---------------------------------------------------------------------------------------------
 void InterfaceQt::onButtonAquisitionClicked() { // Bouton qui lance l'acquisition 
 	sondeur.lancerAcquisition(); // Appele la methode lancer aquisition qui lance tout le programme et le timer
     // Vide tout a chaque fois
